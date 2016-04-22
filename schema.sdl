@@ -1,0 +1,143 @@
+## Produce Marketplace Schema
+
+type User implements Node @rootViewer(field: "viewer") {
+  id: ID!
+  firstName: String
+  lastName: String
+  emails: [String]!
+  isAdmin: Boolean!
+  profilePictureUrl: String
+  surplus: NodeConnection(Surplus, seller)
+  offers: NodeConnection(Offer, buyer)
+}
+
+type Surplus implements Node @rootConnection(field: "allSurplus") {
+  id: ID!
+  name: String!
+  category: Category!
+  variety: [String]!
+  condition: [Condition]
+  reasonForListing: [ReasonForListing]
+  unit: Unit!
+  quantityAvailable: Float!
+  minimumOrder: Float!
+  unitPrice: Float!
+  endsAt: String!
+  pictureUrl: String
+  seller: NodeConnection(User, surplus)
+  offers: NodeConnection(Offer, surplus)
+}
+
+type Offer implements Node {
+  id: ID!
+  surplus: NodeConnection(Surplus, offers)
+  buyer: NodeConnection(User, offers)
+  quantityDesired: Float!
+  timestamp: String!
+  updatedTimestamps: [String]
+  isFullfiled: Boolean!
+  fullfieldTimestamp: String
+}
+
+type FeaturedDeals implements Node @rootConnection(field: "allFeaturedDeals") {
+  id: ID!
+  timestamp: String!
+  surplus: [Surplus]!
+}
+
+mutation addSurplus(
+  name: String!,
+  category: Category!,
+  variety: [String]!,
+  condition: [Condition],
+  reasonForListing: [ReasonForListing],
+  unit: Unit!,
+  quantityAvailable: Float!,
+  minimumOrder: Float!,
+  unitPrice: Float!,
+  endsAt: String!,
+  pictureUrl: String,
+) {
+  surplusEdge: Edge(Surplus)
+  viewer: User
+}
+
+mutation editSurplus(
+  id: ID!,
+  name: String!,
+  category: Category!,
+  variety: [String]!,
+  condition: [Condition],
+  reasonForListing: [ReasonForListing],
+  unit: Unit!,
+  quantityAvailable: Float!,
+  minimumOrder: Float!,
+  unitPrice: Float!,
+  endsAt: String!,
+  pictureUrl: String,
+) {
+  surplus: Surplus
+}
+
+mutation deleteSurplus(id: ID!) {
+  deletedSurplusId: ID
+  viewer: User
+}
+
+mutation addOffer(surplusId: ID!, quantityDesired: Float!) {
+  offerEdge: Edge(Offer)
+  viewer: User
+  surplus: Surplus
+}
+
+mutation fullfilOffer(id: ID!) {
+  offer: Offer
+}
+
+mutation editOffer(id: ID!, quantityDesired: Float!) {
+  offer: Offer
+  surplus: Surplus
+  viewer: User
+}
+
+mutation deleteOffer(id: ID!) {
+  deletedOfferId: ID
+  surplus: Surplus
+  viewer: User
+}
+
+mutation addFeaturedDeals(surplusIds: [ID]!) {
+  featuredDeals: FeaturedDeals
+}
+
+enum Category {
+  PRODUCE
+  DAIRY
+}
+
+enum Condition {
+  BLEMISHED
+  RIPE
+  ORGANIC
+  CERTIFIED_ORGANIC
+}
+
+enum ReasonForListing {
+  EXCESS_INVENTORY
+  IRREGULAR_COLOR
+  IMPERFECT_SHAPE
+  INCONSISTENT_SIZE
+}
+
+enum Unit {
+  POUNDS
+  COUNT
+  CASE
+  PINT
+  FLAT
+  BAG
+  OUNCES
+  DOZEN
+  GALLON
+  HALF_GALLON
+}

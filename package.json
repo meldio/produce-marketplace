@@ -1,0 +1,45 @@
+{
+  "name": "produce-marketplace",
+  "version": "0.0.1",
+  "description": "Produce marketplace demo backend",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/meldio/produce-marketplace.git"
+  },
+  "license": "MIT",
+  "config": {
+    "meldio": {
+      "dbConnectionUri": "mongodb://localhost:27017/produce-marketplace",
+      "protocol": "http",
+      "host": "localhost",
+      "port": 9000,
+      "enabledAuth": [
+        "facebook",
+        "google",
+        "password"
+      ],
+      "sessionDurationUnit": "days",
+      "sessionDuration": "7",
+      "passwordHashStrength": 12,
+      "scopes": {
+        "facebook": [
+          "public_profile",
+          "email"
+        ],
+        "google": [
+          "https://www.googleapis.com/auth/userinfo.profile",
+          "https://www.googleapis.com/auth/userinfo.email"
+        ],
+        "github": [
+          "user:email"
+        ]
+      },
+      "root": "",
+      "schema": "schema.sdl",
+      "permissions": "permissions.js",
+      "mutations": "mutations",
+      "hooks": "hooks",
+      "build": ".build"
+    }
+  }
+}
